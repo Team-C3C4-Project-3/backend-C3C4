@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "format": "prettier --write server.ts",
+    "format:check": "prettier --check server.ts",
     "start": "node dist/server.js",
     "type-check": "tsc --noEmit",
     "start:dev": "LOCAL=true ts-node server.ts",
