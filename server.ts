@@ -117,6 +117,15 @@ app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
   res.json(dbres.rows);
 });
 
+app.get<{ user_id: number }>("/user/:user_id", async (req, res) => {
+  const dbres = await client.query(
+    "select * from users where id = $1;",
+    [req.params.user_id]
+  );
+  res.json(dbres.rows);
+});
+
+
 //Start the server on the given port
 const port = process.env.PORT;
 if (!port) {
@@ -125,3 +134,4 @@ if (!port) {
 app.listen(port, () => {
   console.log(`Server is up and running on port ${port}`);
 });
+
