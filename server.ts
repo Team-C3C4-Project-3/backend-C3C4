@@ -28,6 +28,32 @@ const client = new Client(dbConfig);
 
 client.connect();
 
+interface TagResObject {
+  tag: string;
+}
+
+app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
+  const recRes = await client.query(
+    "select * from recs join users on recs.user_id = users.id where recs.id = $1",
+    [req.params.rec_id]
+  );
+  const commentRes = await client.query(
+    "select * from comments where rec_id = $1",
+    [req.params.rec_id]
+  );
+  const tagRes = await client.query("select tag from tags where rec_id = $1", [
+    req.params.rec_id,
+  ]);
+  // const tags = tagRes.map((element: TagResObject) => element.tag);
+  const response = {
+    recInfo: recRes.rows,
+    comments: commentRes.rows,
+    tags: tagRes.rows,
+  };
+  console.log(response);
+  res.json(response);
+});
+
 app.get("/recentrecs", async (req, res) => {
   const dbres = await client.query(
     "select id, title, author, type, summary, link from recs order by submit_time desc limit 10;"
@@ -47,7 +73,7 @@ app.get("/types", async (req, res) => {
     "tool",
     "other",
   ];
-  res.json({ types: types });
+  res.json(types);
 });
 
 app.get("/users", async (req, res) => {
@@ -80,7 +106,7 @@ app.get("/tags", async (req, res) => {
     "promise",
     "API",
   ];
-  res.json({ tags: tags });
+  res.json(tags);
 });
 
 app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
