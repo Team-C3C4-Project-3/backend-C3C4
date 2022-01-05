@@ -83,6 +83,14 @@ app.get("/tags", async (req, res) => {
   res.json({ tags: tags });
 });
 
+app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
+  const dbres = await client.query(
+    "select id, title, author, type, summary, link, submit_time from study_list join recs on study_list.rec_id = recs.id where study_list.user_id = $1",
+    [req.params.user_id]
+  );
+  res.json(dbres.rows);
+});
+
 //Start the server on the given port
 const port = process.env.PORT;
 if (!port) {
