@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
 
-config(); 
+config();
 
 //Call this script with the environment variable LOCAL set if you want to connect to a local db (i.e. without SSL)
 //Do not set the environment variable LOCAL if you want to connect to a heroku DB.
@@ -33,6 +33,21 @@ app.get("/recentrecs", async (req, res) => {
     "select id, title, author, type, summary, link from recs order by submit_time desc limit 10;"
   );
   res.json(dbres.rows);
+});
+
+app.get("/types", async (req, res) => {
+  const types = [
+    "podcast",
+    "article",
+    "webpage",
+    "video",
+    "interactive-course",
+    "eBook",
+    "exercise",
+    "tool",
+    "other",
+  ];
+  res.json({ types: types });
 });
 
 //Start the server on the given port
