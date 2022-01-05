@@ -38,7 +38,7 @@ app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
     [req.params.rec_id]
   );
   const commentRes = await client.query(
-    "select * from comments where rec_id = $1",
+    "select * from comments join users on comments.user_id = users.id where rec_id = $1;",
     [req.params.rec_id]
   );
   const tagRes = await client.query("select tag from tags where rec_id = $1", [
