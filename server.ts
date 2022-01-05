@@ -55,6 +55,13 @@ app.get("/users", async (req, res) => {
   res.json(dbres.rows);
 });
 
+app.get<{ type: string }>("/rec/:type", async (req, res) => {
+  const dbres = await client.query("select * from recs where type=$1", [
+    req.params.type,
+  ]);
+  res.json(dbres.rows);
+});
+
 //Start the server on the given port
 const port = process.env.PORT;
 if (!port) {
