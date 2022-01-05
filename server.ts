@@ -62,6 +62,27 @@ app.get<{ type: string }>("/rec/:type", async (req, res) => {
   res.json(dbres.rows);
 });
 
+app.get("/tags", async (req, res) => {
+  const tags = [
+    "creative coding",
+    "JavaScript",
+    "HTML/CSS",
+    "React",
+    "TypeScript",
+    "people skills",
+    "Git",
+    "CI/CD",
+    "SQL",
+    "workflows",
+    "Heroku",
+    "server",
+    "database",
+    "promise",
+    "API",
+  ];
+  res.json({ tags: tags });
+});
+
 //Start the server on the given port
 const port = process.env.PORT;
 if (!port) {
