@@ -24,10 +24,12 @@ app.use(express.json()); //add body parser to each following route handler
 app.use(cors()); //add CORS support to each following route handler
 
 const client = new Client(dbConfig);
+// console.log(client);
+
 client.connect();
 
-app.get("/", async (req, res) => {
-  const dbres = await client.query("select * from categories");
+app.get("/recentrecs", async (req, res) => {
+  const dbres = await client.query("select id, title, author, type, summary, link from recs order by submit_time desc limit 10;");
   res.json(dbres.rows);
 });
 
