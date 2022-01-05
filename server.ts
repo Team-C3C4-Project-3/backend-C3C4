@@ -29,7 +29,9 @@ const client = new Client(dbConfig);
 client.connect();
 
 app.get("/recentrecs", async (req, res) => {
-  const dbres = await client.query("select id, title, author, type, summary, link from recs order by submit_time desc limit 10;");
+  const dbres = await client.query(
+    "select id, title, author, type, summary, link from recs order by submit_time desc limit 10;"
+  );
   res.json(dbres.rows);
 });
 
