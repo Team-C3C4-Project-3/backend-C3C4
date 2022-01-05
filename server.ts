@@ -125,6 +125,25 @@ app.get<{ user_id: number }>("/user/:user_id", async (req, res) => {
   res.json(dbres.rows);
 });
 
+app.post("/rec", async (req,res) => {
+  try {
+    let {title, type, link, author, status, reason, summary, tags, user_id} = req.body;
+    const dbres = await client.query("insert into recs (user_id, title, author, type, link, summary, status, reason) values ($1, $2, $3, $4, $5, $6, $7, $8);", [user_id, title, author, type, link, summary, status, reason]);
+    // console.log("Posted successfully")
+
+    const recentRecID = await client.query("select id from recs order by submit_time desc limit 1;")
+
+    tags.forEach(async (tag: string) => {
+    await client.query("insert into tags (rec_id, tag) values ($1, $2);", [recentRecID.rows[0].id, tag])
+    })
+    // console.log(recentRecID.rows[0].id)
+    res.json({status: 200, message: "Posted successfully"});
+  } catch(error) {
+    console.error(error)
+  } finally {}
+
+  
+})
 
 //Start the server on the given port
 const port = process.env.PORT;
