@@ -50,14 +50,30 @@ app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
     comments: commentRes.rows,
     tags: tagRes.rows,
   };
-  res.status(200).json({ status: "success", data: response });
+  if (
+    recRes.rowCount === 0 ||
+    commentRes.rowCount === 0 ||
+    tagRes.rowCount === 0
+  ) {
+    res
+      .status(400)
+      .json({ status: "failed", message: "one of the responses were empty" });
+  } else {
+    res.status(200).json({ status: "success", data: response });
+  }
 });
 
 app.get("/recentrecs", async (req, res) => {
   const dbres = await client.query(
     "select id, title, author, type, summary, link from recs order by submit_time desc limit 10;"
   );
-  res.status(200).json({ status: "success", data: dbres.rows });
+  if (dbres.rowCount === 0) {
+    res
+      .status(400)
+      .json({ status: "failed", message: "one of the responses were empty" });
+  } else {
+    res.status(200).json({ status: "success", data: dbres.rows });
+  }
 });
 
 app.get("/types", async (req, res) => {
@@ -77,14 +93,24 @@ app.get("/types", async (req, res) => {
 
 app.get("/users", async (req, res) => {
   const dbres = await client.query("select * from users");
-  res.status(200).json({ status: "success", data: dbres.rows });
+  if (dbres.rowCount === 0) {
+    res.status(400).json({ status: "failed", message: "response is empty" });
+  } else {
+    res.status(200).json({ status: "success", data: dbres.rows });
+  }
 });
 
 app.get<{ type: string }>("/rec/:type", async (req, res) => {
   const dbres = await client.query("select * from recs where type=$1", [
     req.params.type,
   ]);
-  res.status(200).json({ status: "success", data: dbres.rows });
+  if (dbres.rowCount === 0) {
+    res
+      .status(400)
+      .json({ status: "failed", message: "one of the responses were empty" });
+  } else {
+    res.status(200).json({ status: "success", data: dbres.rows });
+  }
 });
 
 app.get("/tags", async (req, res) => {
@@ -113,14 +139,26 @@ app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
     "select id, title, author, type, summary, link, submit_time from study_list join recs on study_list.rec_id = recs.id where study_list.user_id = $1",
     [req.params.user_id]
   );
-  res.status(200).json({ status: "success", data: dbres.rows });
+  if (dbres.rowCount === 0) {
+    res
+      .status(400)
+      .json({ status: "failed", message: "one of the responses were empty" });
+  } else {
+    res.status(200).json({ status: "success", data: dbres.rows });
+  }
 });
 
 app.get<{ user_id: number }>("/user/:user_id", async (req, res) => {
   const dbres = await client.query("select * from users where id = $1;", [
     req.params.user_id,
   ]);
-  res.status(200).json({ status: "success", data: dbres.rows });
+  if (dbres.rowCount === 0) {
+    res
+      .status(400)
+      .json({ status: "failed", message: "one of the responses were empty" });
+  } else {
+    res.status(200).json({ status: "success", data: dbres.rows });
+  }
 });
 
 //post new recommendation
