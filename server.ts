@@ -188,6 +188,21 @@ app.put("/like/:rec_id", async (req, res) => {
   }
 });
 
+//add 1 dilike
+app.put("/dislike/:rec_id", async (req, res) => {
+  try {
+    let { rec_id } = req.body;
+    const dbres = await client.query(
+      "update recs set dislikes = dislikes + 1 where recs.id = $1",
+      [rec_id]
+    );
+    res.status(200).json({ status: "success" });
+  } catch (error) {
+    console.error(error);
+  } finally {
+  }
+});
+
 //Start the server on the given port
 const port = process.env.PORT;
 if (!port) {
