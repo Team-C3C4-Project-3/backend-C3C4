@@ -219,6 +219,20 @@ app.post("/study-list/:user_id/:rec_id", async (req, res) => {
   }
 });
 
+app.delete("/study-list/:user_id/:rec_id", async (req, res) => {
+  try {
+    let { user_id, rec_id } = req.params;
+    const dbres = await client.query(
+      "DELETE FROM study_list WHERE rec_id = $1 AND user_id = $2",
+      [rec_id, user_id]
+    );
+    res.status(200).json({ status: "success" });
+  } catch (error) {
+    console.error(error);
+  } finally {
+  }
+});
+
 //Start the server on the given port
 const port = process.env.PORT;
 if (!port) {
