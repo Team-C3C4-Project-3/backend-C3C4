@@ -60,6 +60,7 @@ app.get("/recentrecs", async (req, res) => {
   res.status(200).json({ status: "success", data: dbres.rows });
 });
 
+
 app.get("/types", async (req, res) => {
   const types = [
     "podcast",
@@ -241,3 +242,5 @@ if (!port) {
 app.listen(port, () => {
   console.log(`Server is up and running on port ${port}`);
 });
+
+export default app;
