@@ -46,7 +46,7 @@ values ('Jenna'), ('Hanna'), ('Truman'), ('Nico');
 
 insert into recs (user_id, title, type, link, summary, status, reason)
 values (1, 'What even is yarn', 'webpage', 'https://yarnpkg.com/', 'Package manager',
-        'recommended', 'I did not know what yarn was, but now I do')
+        'recommended', 'I did not know what yarn was, but now I do');
 
 insert into comments (user_id, rec_id, comment)
 values (2, 2, 'I hated this, never reading this again');
@@ -55,4 +55,8 @@ insert into tags (rec_id, tag)
 values (2, 'yarn'), (2, 'package-management');
 
 insert into study_list (user_id, rec_id)
-values (3, 2)
+values (3, 2);
+
+insert into recs (user_id, title, author, type, link, summary, status, reason)
+values (2, 'How to color in p5js', 'Daniel Schiffman', 'video', 'https://yarnpkg.com/', 'interactive video explaining how to use color',
+        'recommended', 'fun');
