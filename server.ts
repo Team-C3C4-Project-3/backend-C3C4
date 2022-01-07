@@ -170,7 +170,6 @@ app.post("/rec", async (req, res) => {
       "insert into recs (user_id, title, author, type, link, summary, status, reason) values ($1, $2, $3, $4, $5, $6, $7, $8) returning *;",
       [user_id, title, author, type, link, summary, status, reason]
     );
-    // console.log("Posted successfully")
 
     const recentRecID = await client.query(
       "select id from recs order by submit_time desc limit 1;"
