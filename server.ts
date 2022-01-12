@@ -20,6 +20,8 @@ const dbConfig = {
 
 const app = express();
 
+module.exports = app;
+
 app.use(express.json()); //add body parser to each following route handler
 app.use(cors()); //add CORS support to each following route handler
 
@@ -50,11 +52,7 @@ app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
     comments: commentRes.rows,
     tags: tagRes.rows,
   };
-  if (
-    recRes.rowCount === 0 ||
-    commentRes.rowCount === 0 ||
-    tagRes.rowCount === 0
-  ) {
+  if (recRes.rowCount === 0 || tagRes.rowCount === 0) {
     res
       .status(400)
       .json({ status: "failed", message: "one of the responses were empty" });
@@ -68,9 +66,7 @@ app.get("/recentrecs", async (req, res) => {
     "select id, user_id, title, author, type, summary, link from recs order by submit_time desc limit 10;"
   );
   if (dbres.rowCount === 0) {
-    res
-      .status(400)
-      .json({ status: "failed", message: "one of the responses were empty" });
+    res.status(400).json({ status: "failed", message: "empty response" });
   } else {
     res.status(200).json({ status: "success", data: dbres.rows });
   }
