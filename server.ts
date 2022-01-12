@@ -50,11 +50,7 @@ app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
     comments: commentRes.rows,
     tags: tagRes.rows,
   };
-  if (
-    recRes.rowCount === 0 ||
-    commentRes.rowCount === 0 ||
-    tagRes.rowCount === 0
-  ) {
+  if (recRes.rowCount === 0 || tagRes.rowCount === 0) {
     res
       .status(400)
       .json({ status: "failed", message: "one of the responses were empty" });
