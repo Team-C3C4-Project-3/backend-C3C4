@@ -138,7 +138,7 @@ app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
   if (dbres.rowCount === 0) {
     res
       .status(400)
-      .json({ status: "failed", message: "one of the responses were empty" });
+      .json({ status: "failed", message: "one of the responses were empty", data:[] });
   } else {
     res.status(200).json({ status: "success", data: dbres.rows });
   }
