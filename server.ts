@@ -136,17 +136,7 @@ app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
     "select id, title, author, type, summary, link, submit_time from study_list join recs on study_list.rec_id = recs.id where study_list.user_id = $1",
     [req.params.user_id]
   );
-  if (dbres.rowCount === 0) {
-    res
-      .status(400)
-      .json({
-        status: "failed",
-        message: "one of the responses were empty",
-        data: [],
-      });
-  } else {
-    res.status(200).json({ status: "success", data: dbres.rows });
-  }
+  res.status(200).json({ status: "success", data: dbres.rows });
 });
 
 app.get<{ user_id: number }>("/user/:user_id", async (req, res) => {
