@@ -97,9 +97,10 @@ app.get("/users", async (req, res) => {
 });
 
 app.get<{ type: string }>("/recs/:type", async (req, res) => {
-  const dbres = await client.query("select * from recs join users on recs.user_id = users.id where type = $1 order by submit_time desc limit 50;", [
-    req.params.type,
-  ]);
+  const dbres = await client.query(
+    "select * from recs join users on recs.user_id = users.id where type = $1 order by submit_time desc limit 50;",
+    [req.params.type]
+  );
   if (dbres.rowCount === 0) {
     res
       .status(400)
@@ -138,7 +139,11 @@ app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
   if (dbres.rowCount === 0) {
     res
       .status(400)
-      .json({ status: "failed", message: "one of the responses were empty", data:[] });
+      .json({
+        status: "failed",
+        message: "one of the responses were empty",
+        data: [],
+      });
   } else {
     res.status(200).json({ status: "success", data: dbres.rows });
   }
