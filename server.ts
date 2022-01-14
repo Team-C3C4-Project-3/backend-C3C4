@@ -50,11 +50,7 @@ app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
     comments: commentRes.rows,
     tags: tagRes.rows,
   };
-  if (
-    recRes.rowCount === 0 ||
-    commentRes.rowCount === 0 ||
-    tagRes.rowCount === 0
-  ) {
+  if (recRes.rowCount === 0 || tagRes.rowCount === 0) {
     res
       .status(400)
       .json({ status: "failed", message: "one of the responses were empty" });
@@ -65,7 +61,7 @@ app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
 
 app.get("/recentrecs", async (req, res) => {
   const dbres = await client.query(
-    "select recs.id, recs.user_id, recs.title, recs.author, recs.type, recs.summary, recs.link, users.name from recs join users on recs.user_id = users.id order by submit_time desc limit 10;"
+    "select recs.id, recs.user_id, recs.title, recs.author, recs.type, recs.summary, recs.link, recs.submit_time, users.name from recs join users on recs.user_id = users.id order by submit_time desc limit 10;"
   );
   if (dbres.rowCount === 0) {
     res
@@ -100,10 +96,11 @@ app.get("/users", async (req, res) => {
   }
 });
 
-app.get<{ type: string }>("/rec/:type", async (req, res) => {
-  const dbres = await client.query("select * from recs where type=$1", [
-    req.params.type,
-  ]);
+app.get<{ type: string }>("/recs/:type", async (req, res) => {
+  const dbres = await client.query(
+    "select * from recs join users on recs.user_id = users.id where type = $1 order by submit_time desc limit 50;",
+    [req.params.type]
+  );
   if (dbres.rowCount === 0) {
     res
       .status(400)
@@ -139,13 +136,7 @@ app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
     "select id, title, author, type, summary, link, submit_time from study_list join recs on study_list.rec_id = recs.id where study_list.user_id = $1",
     [req.params.user_id]
   );
-  if (dbres.rowCount === 0) {
-    res
-      .status(400)
-      .json({ status: "failed", message: "one of the responses were empty" });
-  } else {
-    res.status(200).json({ status: "success", data: dbres.rows });
-  }
+  res.status(200).json({ status: "success", data: dbres.rows });
 });
 
 app.get<{ user_id: number }>("/user/:user_id", async (req, res) => {
