@@ -97,7 +97,7 @@ app.get("/users", async (req, res) => {
 });
 
 app.get<{ type: string }>("/recs/:type", async (req, res) => {
-  const dbres = await client.query("select * from recs where type=$1", [
+  const dbres = await client.query("select * from recs join users on recs.user_id = users.id where type = $1 order by submit_time desc limit 50;", [
     req.params.type,
   ]);
   if (dbres.rowCount === 0) {
