@@ -96,7 +96,7 @@ app.get("/users", async (req, res) => {
   }
 });
 
-app.get<{ type: string }>("/rec/:type", async (req, res) => {
+app.get<{ type: string }>("/recs/:type", async (req, res) => {
   const dbres = await client.query("select * from recs where type=$1", [
     req.params.type,
   ]);
