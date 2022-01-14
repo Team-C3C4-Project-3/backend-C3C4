@@ -61,7 +61,7 @@ app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
 
 app.get("/recentrecs", async (req, res) => {
   const dbres = await client.query(
-    "select id, user_id, title, author, type, summary, link, submit_time from recs order by submit_time desc limit 10;"
+    "select recs.id, recs.user_id, recs.title, recs.author, recs.type, recs.summary, recs.link, recs.submit_time, users.name from recs join users on recs.user_id = users.id order by submit_time desc limit 10;"
   );
   if (dbres.rowCount === 0) {
     res
