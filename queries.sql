@@ -60,3 +60,18 @@ values (3, 2);
 insert into recs (user_id, title, author, type, link, summary, status, reason)
 values (2, 'How to color in p5js', 'Daniel Schiffman', 'video', 'https://yarnpkg.com/', 'interactive video explaining how to use color',
         'recommended', 'fun');
+
+create table likes (
+  user_id serial references users(id), 
+  rec_id serial references recs(id), 
+  likes integer default 0 
+);
+
+create table dislikes (
+  user_id serial references users(id), 
+  rec_id serial references recs(id), 
+  dislikes integer default 0
+);
+
+insert into likes (user_id, rec_id)
+values (1, 2);
