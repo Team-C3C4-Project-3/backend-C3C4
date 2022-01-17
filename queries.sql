@@ -60,3 +60,4 @@ values (3, 2);
 insert into recs (user_id, title, author, type, link, summary, status, reason)
 values (2, 'How to color in p5js', 'Daniel Schiffman', 'video', 'https://yarnpkg.com/', 'interactive video explaining how to use color',
         'recommended', 'fun');
+

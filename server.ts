@@ -2,6 +2,7 @@ import { Client } from "pg";
 import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
+import generateSearchQuery from "./utils/generateSearchQuery";
 
 config();
 
@@ -198,6 +199,25 @@ app.post("/comment", async (req, res) => {
   } catch (error) {
     console.error(error);
   } finally {
+  }
+});
+
+// Search endpoint
+app.get<{ query: string }>("/search/:query", async (req, res) => {
+  const keywords = req.params.query.toLowerCase().split("+");
+  const keywordsFormat = keywords.map((el) => `%${el}%`);
+
+  const queryResult = generateSearchQuery(keywordsFormat);
+  console.log(queryResult);
+  const dbres = await client.query(queryResult, keywordsFormat);
+  // console.log(dbres.rows)
+  // console.log(keywordsFormat)
+  if (dbres.rowCount === 0) {
+    res
+      .status(400)
+      .json({ status: "failed", message: "one of the responses were empty" });
+  } else {
+    res.status(200).json({ status: "success", data: dbres.rows });
   }
 });
 
