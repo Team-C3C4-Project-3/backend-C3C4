@@ -60,3 +60,17 @@ values (3, 2);
 insert into recs (user_id, title, author, type, link, summary, status, reason)
 values (2, 'How to color in p5js', 'Daniel Schiffman', 'video', 'https://yarnpkg.com/', 'interactive video explaining how to use color',
         'recommended', 'fun');
+
+recs join users
+on recs.user_id = users.id
+join tags
+on recs.id = tags.rec_id
+where title like '%coding%'
+or type like '%coding%'
+or author like '%coding%'
+or summary like '%coding%'
+or reason like '%coding%'
+or tag like '%coding%'
+or name like '%coding%'
+group by recs.id
+limit 10;
