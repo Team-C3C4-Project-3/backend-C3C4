@@ -206,12 +206,40 @@ app.post("/comment", async (req, res) => {
   }
 });
 
-//add 1 like
+app.get<{ rec_id: number }>("/total-likes/:rec_id", async (req, res) => {
+  try {
+    let { rec_id } = req.params;
+    const dbres = await client.query(
+      "select rec_id, sum(likes) as total_likes from likes where rec_id = $1 group by rec_id",
+      [rec_id]
+    );
+    res.status(200).json({ status: "success", likes: dbres.rows });
+  } catch (error) {
+    console.error(error);
+  } finally {
+  }
+});
+
+app.get<{ rec_id: number }>("/total-dislikes/:rec_id", async (req, res) => {
+  try {
+    let { rec_id } = req.params;
+    const dbres = await client.query(
+      "select rec_id, sum(dislikes) as total_dislikes from dislikes where rec_id = $1 group by rec_id",
+      [rec_id]
+    );
+    res.status(200).json({ status: "success", dislikes: dbres.rows });
+  } catch (error) {
+    console.error(error);
+  } finally {
+  }
+});
+
+//update like from 1 to 0
 app.put("/like/:rec_id", async (req, res) => {
   try {
     let { rec_id } = req.params;
     const dbres = await client.query(
-      "update recs set likes = likes + 1 where recs.id = $1",
+      "update likes set likes = likes - 1 where recs.id = $1",
       [rec_id]
     );
     res.status(200).json({ status: "success" });
@@ -221,12 +249,12 @@ app.put("/like/:rec_id", async (req, res) => {
   }
 });
 
-//add 1 dilike
+//minus 1 dilike
 app.put("/dislike/:rec_id", async (req, res) => {
   try {
     let { rec_id } = req.params;
     const dbres = await client.query(
-      "update recs set dislikes = dislikes + 1 where recs.id = $1",
+      "update dislikes set dislikes = dislikes - 1 where recs.id = $1",
       [rec_id]
     );
     res.status(200).json({ status: "success" });
