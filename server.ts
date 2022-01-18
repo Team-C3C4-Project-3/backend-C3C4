@@ -225,10 +225,10 @@ app.get<{ rec_id: number }>("/total-likes/:rec_id", async (req, res) => {
   try {
     let { rec_id } = req.params;
     const dbres = await client.query(
-      "select rec_id, sum(likes) as total_likes from likes where rec_id = $1 group by rec_id",
+      "select rec_id, sum(likes) as total from likes where rec_id = $1 group by rec_id",
       [rec_id]
     );
-    res.status(200).json({ status: "success", likes: dbres.rows });
+    res.status(200).json({ status: "success", opinion: dbres.rows });
   } catch (error) {
     console.error(error);
   } finally {
@@ -239,10 +239,10 @@ app.get<{ rec_id: number }>("/total-dislikes/:rec_id", async (req, res) => {
   try {
     let { rec_id } = req.params;
     const dbres = await client.query(
-      "select rec_id, sum(dislikes) as total_dislikes from dislikes where rec_id = $1 group by rec_id",
+      "select rec_id, sum(dislikes) as total from dislikes where rec_id = $1 group by rec_id",
       [rec_id]
     );
-    res.status(200).json({ status: "success", dislikes: dbres.rows });
+    res.status(200).json({ status: "success", opinion: dbres.rows });
   } catch (error) {
     console.error(error);
   } finally {
