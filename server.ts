@@ -221,13 +221,41 @@ app.get<{ query: string }>("/search/:query", async (req, res) => {
   }
 });
 
-//add 1 like
-app.put("/like/:rec_id", async (req, res) => {
+app.get<{ rec_id: number }>("/total-likes/:rec_id", async (req, res) => {
   try {
     let { rec_id } = req.params;
     const dbres = await client.query(
-      "update recs set likes = likes + 1 where recs.id = $1",
+      "select rec_id, sum(likes) as total_likes from likes where rec_id = $1 group by rec_id",
       [rec_id]
+    );
+    res.status(200).json({ status: "success", likes: dbres.rows });
+  } catch (error) {
+    console.error(error);
+  } finally {
+  }
+});
+
+app.get<{ rec_id: number }>("/total-dislikes/:rec_id", async (req, res) => {
+  try {
+    let { rec_id } = req.params;
+    const dbres = await client.query(
+      "select rec_id, sum(dislikes) as total_dislikes from dislikes where rec_id = $1 group by rec_id",
+      [rec_id]
+    );
+    res.status(200).json({ status: "success", dislikes: dbres.rows });
+  } catch (error) {
+    console.error(error);
+  } finally {
+  }
+});
+
+//add 1 like
+app.post("/like/:user_id/:rec_id/", async (req, res) => {
+  try {
+    let { user_id, rec_id } = req.params;
+    const dbres = await client.query(
+      "insert into likes (user_id, rec_id, likes) values ($1, $2, 1)",
+      [user_id, rec_id]
     );
     res.status(200).json({ status: "success" });
   } catch (error) {
@@ -236,12 +264,40 @@ app.put("/like/:rec_id", async (req, res) => {
   }
 });
 
-//add 1 dilike
-app.put("/dislike/:rec_id", async (req, res) => {
+app.post("/dislike/:user_id/:rec_id", async (req, res) => {
   try {
-    let { rec_id } = req.params;
+    let { user_id, rec_id } = req.params;
     const dbres = await client.query(
-      "update recs set dislikes = dislikes + 1 where recs.id = $1",
+      "insert into dislikes (user_id, rec_id, dislikes) values ($1, $2, 1)",
+      [user_id, rec_id]
+    );
+    res.status(200).json({ status: "success" });
+  } catch (error) {
+    console.error(error);
+  } finally {
+  }
+});
+
+//update like from 1 to 0
+app.delete("/like/:user_id/:rec_id", async (req, res) => {
+  try {
+    let { user_id, rec_id } = req.params;
+    const dbres = await client.query("delete from likes where recs.id = $1", [
+      rec_id,
+    ]);
+    res.status(200).json({ status: "success" });
+  } catch (error) {
+    console.error(error);
+  } finally {
+  }
+});
+
+//minus 1 dilike
+app.delete("/dislike/:user_id/:rec_id", async (req, res) => {
+  try {
+    let { user_id, rec_id } = req.params;
+    const dbres = await client.query(
+      "delete from dislikes where recs.id = $1",
       [rec_id]
     );
     res.status(200).json({ status: "success" });
