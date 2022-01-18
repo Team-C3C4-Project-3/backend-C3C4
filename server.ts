@@ -46,7 +46,7 @@ app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
   const tagRes = await client.query("select tag from tags where rec_id = $1", [
     req.params.rec_id,
   ]);
-  // const tags = tagRes.map((element: TagResObject) => element.tag);
+
   const response = {
     recInfo: recRes.rows,
     comments: commentRes.rows,
@@ -129,6 +129,16 @@ app.get("/tags", async (req, res) => {
     "API",
   ];
   res.status(200).json({ status: "success", data: tags });
+});
+
+app.get<{ tags: string }>("/tags/:tags", async (req, res) => {
+  const tagsArray = req.params.tags.split("+").map((element) => `'${element}'`).join(",@");
+  console.log(tagsArray)
+  const dbres = await client.query(
+    `select id, title, author, type, summary, link, submit_time from recs join tags on recs.id = tags.rec_id where tag in ($1) group by recs.id`,
+    [tagsArray[0]]
+  );
+  res.status(200).json({ status: "success", data: dbres.rows });
 });
 
 app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
