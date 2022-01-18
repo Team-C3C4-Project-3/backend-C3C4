@@ -282,7 +282,7 @@ app.post("/dislike/:user_id/:rec_id", async (req, res) => {
 app.delete("/like/:user_id/:rec_id", async (req, res) => {
   try {
     let { user_id, rec_id } = req.params;
-    const dbres = await client.query("delete from likes where recs.id = $1", [
+    const dbres = await client.query("delete from likes where rec_id = $1", [
       rec_id,
     ]);
     res.status(200).json({ status: "success" });
@@ -296,10 +296,9 @@ app.delete("/like/:user_id/:rec_id", async (req, res) => {
 app.delete("/dislike/:user_id/:rec_id", async (req, res) => {
   try {
     let { user_id, rec_id } = req.params;
-    const dbres = await client.query(
-      "delete from dislikes where recs.id = $1",
-      [rec_id]
-    );
+    const dbres = await client.query("delete from dislikes where rec_id = $1", [
+      rec_id,
+    ]);
     res.status(200).json({ status: "success" });
   } catch (error) {
     console.error(error);
