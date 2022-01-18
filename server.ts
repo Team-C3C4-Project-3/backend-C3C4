@@ -113,14 +113,15 @@ app.get<{ type: string }>("/recs/:type", async (req, res) => {
 
 app.get("/tags", async (req, res) => {
   const tags = [
-    "creative coding",
+    "creative-coding",
     "JavaScript",
-    "HTML/CSS",
+    "HTML",
+    "CSS",
     "React",
     "TypeScript",
-    "people skills",
+    "people-skills",
     "Git",
-    "CI/CD",
+    "CI-CD",
     "SQL",
     "workflows",
     "Heroku",
@@ -133,12 +134,16 @@ app.get("/tags", async (req, res) => {
 });
 
 app.get<{ tags: string }>("/tags/:tags", async (req, res) => {
-  const tagsArray = req.params.tags.split("+").map((element) => `'${element}'`).join(",@");
-  console.log(tagsArray)
-  const dbres = await client.query(
-    `select id, title, author, type, summary, link, submit_time from recs join tags on recs.id = tags.rec_id where tag in ($1) group by recs.id`,
-    [tagsArray[0]]
-  );
+  const tagsArray = req.params.tags
+    .split("+")
+    .map((element) => `tag = '${element}'`)
+    .join(" or ");
+  let query =
+    "select id, title, author, type, summary, link, submit_time from recs join tags on recs.id = tags.rec_id where " +
+    tagsArray +
+    " group by recs.id";
+
+  const dbres = await client.query(query);
   res.status(200).json({ status: "success", data: dbres.rows });
 });
 
@@ -218,7 +223,6 @@ app.get<{ query: string }>("/search/:query", async (req, res) => {
   const keywordsFormat = keywords.map((el) => `%${el}%`);
 
   const queryResult = generateSearchQuery(keywordsFormat);
-  console.log(queryResult);
   const dbres = await client.query(queryResult, keywordsFormat);
   // console.log(dbres.rows)
   // console.log(keywordsFormat)
