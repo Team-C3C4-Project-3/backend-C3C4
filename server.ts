@@ -143,7 +143,7 @@ app.get<{ tags: string }>("/tags/:tags", async (req, res) => {
 
 app.get<{ user_id: number }>("/studylist/:user_id", async (req, res) => {
   const dbres = await client.query(
-    "select id, title, author, type, summary, link, submit_time from study_list join recs on study_list.rec_id = recs.id where study_list.user_id = $1",
+    "select id, title, author, type, summary, link, submit_time from study_list join recs on study_list.rec_id = recs.id where study_list.user_id = $1 order by rec_id desc",
     [req.params.user_id]
   );
   res.status(200).json({ status: "success", data: dbres.rows });
