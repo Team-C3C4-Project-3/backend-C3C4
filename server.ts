@@ -219,7 +219,6 @@ app.get<{ query: string }>("/search/:query", async (req, res) => {
   const dbres = await client.query(queryResult, keywordsFormat);
 
   res.status(200).json({ status: "success", data: dbres.rows });
-
 });
 
 app.get<{ rec_id: number }>("/total-likes/:rec_id", async (req, res) => {
