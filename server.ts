@@ -102,13 +102,7 @@ app.get<{ type: string }>("/recs/:type", async (req, res) => {
     "select * from recs join users on recs.user_id = users.id where type = $1 order by submit_time desc limit 50;",
     [req.params.type]
   );
-  if (dbres.rowCount === 0) {
-    res
-      .status(400)
-      .json({ status: "failed", message: "one of the responses were empty" });
-  } else {
-    res.status(200).json({ status: "success", data: dbres.rows });
-  }
+  res.status(200).json({ status: "success", data: dbres.rows });
 });
 
 app.get("/tags", async (req, res) => {
@@ -221,18 +215,10 @@ app.post("/comment", async (req, res) => {
 app.get<{ query: string }>("/search/:query", async (req, res) => {
   const keywords = req.params.query.toLowerCase().split("+");
   const keywordsFormat = keywords.map((el) => `%${el}%`);
-
   const queryResult = generateSearchQuery(keywordsFormat);
   const dbres = await client.query(queryResult, keywordsFormat);
-  // console.log(dbres.rows)
-  // console.log(keywordsFormat)
-  if (dbres.rowCount === 0) {
-    res
-      .status(400)
-      .json({ status: "failed", message: "one of the responses were empty" });
-  } else {
-    res.status(200).json({ status: "success", data: dbres.rows });
-  }
+
+  res.status(200).json({ status: "success", data: dbres.rows });
 });
 
 app.get<{ rec_id: number }>("/total-likes/:rec_id", async (req, res) => {
