@@ -35,6 +35,10 @@ interface TagResObject {
   tag: string;
 }
 
+app.get("/", async (req, res) => {
+  res.sendFile(path.join(__dirname + "/../index.html"));
+});
+
 app.get<{ rec_id: number }>("/rec/:rec_id", async (req, res) => {
   const recRes = await client.query(
     "select * from recs join users on recs.user_id = users.id where recs.id = $1",
