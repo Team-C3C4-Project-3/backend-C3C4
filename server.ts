@@ -2,6 +2,7 @@ import { Client } from "pg";
 import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
+import path from "path";
 import generateSearchQuery from "./utils/generateSearchQuery";
 
 config();
